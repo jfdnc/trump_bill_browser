@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legislative Bill Query System - H.R. 1 (2025)</title>
+    <meta name="description" content="Fast, accessible tool to understand the implications of H.R. 1 (2025) - Ask questions and get clear answers about how this legislation affects you.">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏛️</text></svg>">
+</head>
+<body>
+    <!-- Coffee Toast Notification -->
+    <div id="coffee-toast" class="coffee-toast">
+        <div class="coffee-content">
+            <span class="coffee-icon">☕</span>
+            <div class="coffee-text">
+                <strong>Like this tool?</strong>
+                <p>Help keep it running with a small donation</p>
+            </div>
+            <div class="coffee-actions">
+                <button id="coffee-donate" class="coffee-btn primary">☕ Buy me a coffee</button>
+                <button id="coffee-dismiss" class="coffee-btn secondary">Maybe later</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🏛️ Legislative Bill Query</h1>
+                <p class="subtitle">Understanding H.R. 1 (2025): Ask questions about how this comprehensive legislation affects you</p>
+                <div class="bill-info">
+                    <span class="bill-tag">H.R. 1 - 119th Congress</span>
+                    <span class="bill-date">July 1, 2025</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Query Interface -->
+            <section class="query-section">
+                <div class="query-container">
+                    <h2>Ask Your Question</h2>
+                    <div class="query-input-container">
+                        <textarea 
+                            id="query-input" 
+                            placeholder="Ask about tax impacts, benefits, policy changes, or anything else... For example: 'How will this affect my taxes as a small business owner?' or 'What changes are there to SNAP benefits?'"
+                            rows="3"
+                            maxlength="1000"
+                        ></textarea>
+                        <div class="query-controls">
+                            <button id="submit-query" class="btn btn-primary" disabled>
+                                <span class="btn-text">Ask Question</span>
+                                <span class="btn-loader" style="display: none;">Analyzing...</span>
+                            </button>
+                            <div class="char-counter">
+                                <span id="char-count">0</span>/1000
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Query Suggestions -->
+                    <div class="suggestions-container">
+                        <h3>Popular Questions</h3>
+                        <div id="query-suggestions" class="suggestions-grid">
+                            <!-- Suggestions will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Response Display -->
+                <div id="response-container" class="response-container" style="display: none;">
+                    <div class="response-header">
+                        <h3>Analysis Result</h3>
+                        <div class="response-meta">
+                            <span id="confidence-indicator" class="confidence-badge"></span>
+                            <span id="processing-time" class="processing-time"></span>
+                        </div>
+                    </div>
+                    
+                    <div class="response-content">
+                        <div id="response-answer" class="answer-section"></div>
+                        
+                        <div id="key-points" class="key-points-section" style="display: none;">
+                            <h4>Key Points</h4>
+                            <ul id="key-points-list"></ul>
+                        </div>
+                        
+                        <div id="implications" class="implications-section" style="display: none;">
+                            <h4>What This Means</h4>
+                            <p id="implications-text"></p>
+                        </div>
+                        
+                        <div id="relevant-sections" class="sections-section" style="display: none;">
+                            <h4>Relevant Bill Sections</h4>
+                            <div id="sections-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Document Viewer -->
+            <section class="document-section">
+                <div class="document-container">
+                    <div class="document-header">
+                        <h2>Bill Content</h2>
+                        <div class="document-controls">
+                            <button id="show-toc" class="btn btn-secondary">Table of Contents</button>
+                            <button id="search-doc" class="btn btn-secondary">Search Text</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Document Search -->
+                    <div id="document-search" class="document-search" style="display: none;">
+                        <input type="text" id="doc-search-input" placeholder="Search within the bill...">
+                        <button id="doc-search-btn" class="btn btn-small">Search</button>
+                        <button id="close-search" class="btn btn-small secondary">×</button>
+                    </div>
+                    
+                    <!-- Table of Contents -->
+                    <div id="table-of-contents" class="toc-container" style="display: none;">
+                        <h3>Table of Contents</h3>
+                        <div id="toc-content"></div>
+                    </div>
+                    
+                    <!-- Document Content -->
+                    <div id="document-viewer" class="document-viewer">
+                        <div class="loading-state">
+                            <div class="loading-spinner"></div>
+                            <p>Loading bill content...</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>This tool helps citizens understand legislation. Always verify important information with official sources.</p>
+                <div class="footer-links">
+                    <a href="#" id="about-link">About</a>
+                    <a href="#" id="privacy-link">Privacy</a>
+                    <a href="https://github.com" target="_blank">Source Code</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Error</h3>
+                <button id="close-error" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="retry-btn" class="btn btn-primary">Try Again</button>
+                <button id="dismiss-error" class="btn btn-secondary">Dismiss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div id="about-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>About This Tool</h3>
+                <button id="close-about" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <p>This tool helps you understand H.R. 1 (2025) by using artificial intelligence to analyze the legislation and answer your questions in plain English.</p>
+                <h4>How it works:</h4>
+                <ul>
+                    <li>Ask questions about how the bill affects you</li>
+                    <li>AI analyzes relevant sections of the 1,700+ page document</li>
+                    <li>Get clear explanations with references to specific sections</li>
+                    <li>Click on sections to read the full text</li>
+                </ul>
+                <p><strong>Important:</strong> This tool provides helpful summaries, but always verify important information with official sources.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Privacy Policy</h3>
+                <button id="close-privacy" class="modal-close">×</button>
+            </div>
+            <div class="modal-body">
+                <h4>Data Collection</h4>
+                <p>We collect minimal data to improve the service:</p>
+                <ul>
+                    <li>Questions you ask (to improve responses)</li>
+                    <li>Basic usage statistics</li>
+                    <li>No personal information is stored</li>
+                </ul>
+                <h4>Data Usage</h4>
+                <p>Your questions may be cached to improve response times and reduce costs. We do not share your queries with third parties beyond our AI service provider.</p>
+                <h4>Cookies</h4>
+                <p>We use minimal cookies to remember your preferences and improve your experience.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script src="js/queryInterface.js"></script>
+    <script src="js/documentViewer.js"></script>
+    <script src="js/responseDisplay.js"></script>
+</body>
+</html>
